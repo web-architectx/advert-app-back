@@ -8,3 +8,4 @@ export const productValidate = Joi.object({
     price: Joi.string()
 })
 
+
