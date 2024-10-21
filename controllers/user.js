@@ -2,6 +2,7 @@ import { loginUserValidator, registerUserValidator } from "../validators/user.js
 import { UserModel } from "../models/user.js"
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
+import { mailtransporter } from "../utils/mail.js"
 
 export const registerUser = async (req, res, next) => {
     try {
@@ -17,6 +18,12 @@ export const registerUser = async (req, res, next) => {
         await UserModel.create({
             ...value,
             password: hashedPassword
+        });
+
+        await mailtransporter.sendMail({
+            to: value.email,
+            subject: 'USER REGISTRATION',
+            text: 'Account registered successfully'
         })
 
         res.json('User registered successfully')
