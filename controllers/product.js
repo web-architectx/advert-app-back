@@ -13,14 +13,13 @@ export const addProduct = async (req, res, next) => {
         await ProductModel.create(value)
         res.status(201).json('Product was added')
     } catch (error) {
-        next(error)
-
+        next(error);
     }
 }
 
 export const getAllProducts = async (req, res, next) => {
     try {
-        const { filter = "{}", limit = 10, skip = 0 } = req.query;
+        const { filter = "{}", limit = 100, skip = 0 } = req.query;
         const products = await ProductModel
             .find(JSON.parse(filter))
             .limit(limit)

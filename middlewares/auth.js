@@ -9,20 +9,24 @@ export const isAuthenticated = expressjwt({
 
 
 export const hasPermission = (action) => {
-    try {
-        return async (req, res, next) => {
-            const user = await UserModel.findById(req.auth.id)
-            const permission = permissions.find(value => value.role === user.role)
-            if (!permission) {
-                return res.status(403).json('No permission found')
-            }
-            if (permission.actions.includes(action)) {
-                next();   
-            }else{
-                res.status(403).json('Action not allowed')
-            }
-        }
-    } catch (error) {
-        next(error)
+    return async (req,res, next) => {
+try {
+    // find user from database
+    const user = await UserModel.findById(req.auth.id) 
+    // use the user role to find their permission
+    const permission = permissions.find(value => value.role === user.role)
+    if (!permission){
+        return res.status(403).json('No permission found')
+    }
+    // check if permission actions include action
+    if (permission.actions.includes(action)){
+        next();
+    } else{
+        res.status(403).json('Action not allowed')
+    }
+} catch (error) {
+    next(error)
+    
+}
     }
 }
