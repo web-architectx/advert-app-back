@@ -4,6 +4,7 @@ export const permissions = [
         actions: [
             'get_products',
             'get_products_id',
+            'count_products'
 
 
         ]
@@ -15,7 +16,8 @@ export const permissions = [
             'get_products_id',
             'post_products',
             'update_products',
-            'delete_products'
+            'delete_products',
+            'count_products'
 
 
         ]

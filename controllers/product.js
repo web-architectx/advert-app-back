@@ -10,7 +10,10 @@ export const addProduct = async (req, res, next) => {
         if (error) {
             return res.status(422).json(error);
         }
-        await ProductModel.create(value)
+        await ProductModel.create({
+            ...value,
+            user: req.auth.id
+        })
         res.status(201).json('Product was added')
     } catch (error) {
         next(error);
@@ -19,9 +22,10 @@ export const addProduct = async (req, res, next) => {
 
 export const getAllProducts = async (req, res, next) => {
     try {
-        const { filter = "{}", limit = 100, skip = 0 } = req.query;
+        const { filter = "{}", sort= "{}" ,limit = 100, skip = 0 } = req.query;
         const products = await ProductModel
             .find(JSON.parse(filter))
+            .sort(JSON.parse(sort))
             .limit(limit)
             .skip(skip);
         res.status(200).json(products)
@@ -39,6 +43,18 @@ export const getProductById = async (req, res, next) => {
     }
 }
 
+export const countProducts = async (req,res,next) => {
+    try {
+      const {filter = "{}"} = req.query;
+      // count todos in database
+      const count = await ProductModel.countDocuments(JSON.parse(filter));
+      // respond to request
+      res.json({count});
+    } catch (error) {
+     next(error)
+    }
+ }
+
 export const updateProduct = async (req, res, next) => {
     try {
        const { error, value } = updateProductValidate.validate({
@@ -48,7 +64,12 @@ export const updateProduct = async (req, res, next) => {
        if (error) {
         return res.status(422).json(error);
        }
-       await ProductModel.findByIdAndUpdate(req.params.id, value, {new:true});
+     const product =  await ProductModel.findOneAndUpdate(
+        {id:req.params.id, user:req.auth.id}, value, {new:true}
+    );
+if (!product) {
+    return res.status(404).json('AD not found')
+}
        res.json(value)
     } catch (error) {
         next(error)
@@ -56,7 +77,14 @@ export const updateProduct = async (req, res, next) => {
 }
 
 export const deleteProduct = async (req, res, next) => {
-   const del = await ProductModel.findByIdAndDelete(req.params.id)
-   res.status(200).json('Product deleted successfully!')
+  try {
+     const del = await ProductModel.findOneAndDelete({id:req.params.id, user:req.auth.id});
+     if(!del){
+        return res.status(404).json('Ad not found.')
+     }
+     res.status(200).json('Product deleted successfully!')
+  } catch (error) {
+    next(error)
+  }
    
 }
