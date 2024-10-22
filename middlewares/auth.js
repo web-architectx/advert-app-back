@@ -14,7 +14,7 @@ try {
     // find user from database
     const user = await UserModel.findById(req.auth.id) 
     // use the user role to find their permission
-    const permission = permissions.find(value => value.role === user.role)
+    const permission = permissions.find(value => value.role === user.role);
     if (!permission){
         return res.status(403).json('No permission found')
     }
