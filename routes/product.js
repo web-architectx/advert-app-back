@@ -7,7 +7,7 @@ import { hasPermission } from "../middlewares/auth.js";
 const productRouter = Router();
 
 productRouter.post('/products', isAuthenticated, hasPermission('post_products'), productImage.single('image'), addProduct)
-productRouter.get('/products',isAuthenticated, hasPermission('get_products'), getAllProducts)
+productRouter.get('/products', getAllProducts)
 productRouter.get('/products/count', isAuthenticated, hasPermission('count_products'), countProducts);
 productRouter.get('/products/:id',isAuthenticated, hasPermission('get_products_id'), getProductById)
 productRouter.patch('/products/:id', isAuthenticated, hasPermission('update_products'), productImage.single('image'), updateProduct);
