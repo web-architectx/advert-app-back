@@ -8,6 +8,19 @@ export const isAuthenticated = expressjwt({
 })
 
 
+/**
+ * Middleware to check if a user has the required permission for a specific action.
+ *
+ * This middleware function retrieves the user's role from the database and checks
+ * if the role has the necessary permissions to perform the specified action.
+ * If the role includes the action in its list of permissions, the middleware
+ * calls the next function to continue processing the request. If the role does
+ * not include the action, it responds with a 403 Forbidden status. If no permission
+ * is found for the role, it also responds with a 403 Forbidden status.
+ *
+ * @param {string} action - The action for which permission is required.
+ * @returns {Function} An Express middleware function that checks permissions.
+ */
 export const hasPermission = (action) => {
     return async (req,res, next) => {
 try {
