@@ -46,9 +46,7 @@ export const getProductById = async (req, res, next) => {
 export const countProducts = async (req, res, next) => {
     try {
         const { filter = "{}" } = req.query;
-        // count products in database
         const count = await ProductModel.countDocuments(JSON.parse(filter));
-        // respond to request
         res.json({ count });
     } catch (error) {
         next(error)
